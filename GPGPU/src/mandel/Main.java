@@ -284,13 +284,39 @@ public class Main{
          System.out.println("Benchmark beendet.");
          
          long absTime = 0;
+         long minTime = 0;
+         long maxTime = 0;
+         
          long absFrame = 0;
+         long minFrame = 0;
+         long maxFrame = 0;
+         
          for(int i = 0;i< wH;i++){
+        	 if(i == 0){
+        		 minFrame = totalFrames[0];
+        		 minTime = totalTimes[0];
+        	 }
+        	 
         	 absTime +=totalTimes[i];
+        	 if(minTime > totalTimes[i])
+        		 minTime = totalTimes[i];
+        	 if(maxTime < totalTimes[i])
+        		 maxTime = totalTimes[i];
+        	 
         	 absFrame += totalFrames[i];
+        	 if(minFrame > totalFrames[i])
+        		 minFrame = totalFrames[i];
+        	 if(maxFrame < totalFrames[i])
+        		 maxFrame = totalFrames[i];
          }
-         System.out.println("Durchscnittliche Rechendauer: " + absTime/wH + " ms\n" +
-         		"Durchschnittliche Framerate: " + absFrame/wH + " fps");
+         System.out.println("Werte Rechendauer:\n"+
+        		 "\tDurchscnittliche Rechendauer: " + absTime/wH + " ms\n" +
+        		 "\tRechendauer Minimum: " + minTime + " ms\n" + 
+        		 "\tRechendauer Maximum: " + maxTime + " ms\n\n" + 
+        		 "Werte Frames:\n"+
+         		 "\tDurchschnittliche Framerate: " + absFrame/wH + " fps\n" +
+        		 "\tFrames Minimum: " + minFrame + " fps\n" + 
+         		 "\tFrames Maximum: " + maxFrame + " fps\n");
 
 
       }
