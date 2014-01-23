@@ -51,10 +51,23 @@ import com.amd.aparapi.Range;
  */
 public class Main{
 
-   public static void main(String[] _args) {
+   public static void main(String[] args) {
+	   
+	   Kernel kernel = null;
+	   int wH = 0;
+	   if(args.length == 1){
+		   //EXCEPTION HANDLING
+		   wH = Integer.parseInt(args[0]);
+		   if(wH == 0){
+			   System.out.println("Falscher Start des Programms.\nRichtig: .jar anzWiederholungen\nanWiederholungen muss groesser 0 sein!");
+			   System.exit(0);
+		   }  
+	   }
 
-	  long startTime, endTime, totalTime;
-      final int size = 100000024;
+	  long startTime = 0;
+	  long endTime = 0;
+	  long []totalTimes = new long[wH];
+      final int size = 100024;
 
       /** Input float array for which square values need to be computed. */
       final float[] values = new float[size];
@@ -70,13 +83,14 @@ public class Main{
       /** Aparapi Kernel which computes squares of input array elements and populates them in corresponding elements of 
        * output array. 
        **/
-      
-      Kernel kernel = new Kernel(){
+      for(int i = 0;i< wH;i++){
+    	  kernel = new Kernel(){
          @Override public void run() {
             int gid = getGlobalId();
             squares[gid] = values[gid] * values[gid];
          }
       };
+      
       
       // Execute Kernel.
       startTime = System.currentTimeMillis();
@@ -84,15 +98,29 @@ public class Main{
       kernel.execute(Range.create(size));
       
       endTime = System.currentTimeMillis();
-      totalTime = endTime - startTime;
+      
+      totalTimes[i] = endTime - startTime;
+      }
       // Report target execution mode: GPU or JTP (Java Thread Pool).
-      System.out.println("Execution mode=" + kernel.getExecutionMode());
+      System.out.println("Execution mode = " + kernel.getExecutionMode());
 
-      // Display computed square values.
-//      for (int i = 0; i < size; i++) {
-//         System.out.printf("%6.0f %8.0f\n", values[i], squares[i]);
-//      }
-      System.out.println("Berechnungszeit: "+totalTime);
+      long totalTime = 0;
+      long minTime = 0;
+      long maxTime = 0;
+      for(int i = 0; i<totalTimes.length;i++){
+    	  totalTime += totalTimes[i];
+    	  if(i == 0){
+    		  minTime = totalTimes[0];
+    	  }
+    	  if(minTime > totalTimes[i])
+    		  minTime = totalTimes[i];
+    	  if(maxTime < totalTimes[i])
+    		  maxTime = totalTimes[i];
+      }
+      System.out.println("Durchschnittliche Rechendauer: " + totalTime/wH + " ms\n" + 
+    		  "Rechendauer Minimum: " + minTime + " ms\n" +
+    		  "Rechendauer Maximum: " + maxTime + " ms");
+      //      System.out.println("Berechnungszeit: "+totalTime);
       // Dispose Kernel resources.
       kernel.dispose();
    }

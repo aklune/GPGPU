@@ -233,7 +233,7 @@ public class Main{
       viewer.repaint();
 
       // Report target execution mode: GPU or JTP (Java Thread Pool).
-      System.out.println("Execution mode=" + kernel.getExecutionMode());
+      System.out.println("Execution mode = " + kernel.getExecutionMode());
 
 
       	 to = new Point(337,307);
@@ -245,11 +245,12 @@ public class Main{
          long[] totalTimes = new long[wH];
          long[] totalFrames = new long[wH];
          //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-         
+         long startMillis = 0;
+         long elapsedMillis = 0;
          for(int wh = 0; wh< wH;wh++){
          // This is how many frames we will display as we zoom in and out.
          int frames = 128;
-         long startMillis = System.currentTimeMillis();
+         
          for (int sign = -1; sign < 2; sign += 2) {
             for (int i = 0; i < frames - 4; i++) {
                scale = scale + sign * defaultScale / frames;
@@ -259,8 +260,11 @@ public class Main{
                // Set the scale and offset, execute the kernel and force a repaint of the viewer.
                kernel.setScaleAndOffset(scale, x, y);
               
+               startMillis = System.currentTimeMillis();
+               
                kernel.execute(range);
-                            
+               
+               elapsedMillis = System.currentTimeMillis() - startMillis;
                List<ProfileInfo> profileInfo = kernel.getProfileInfo();
                
                if (profileInfo != null && profileInfo.size() > 0) {
@@ -276,10 +280,10 @@ public class Main{
             }
          }
 
-         long elapsedMillis = System.currentTimeMillis() - startMillis;
+         
          totalFrames[wh] = frames * 1000 / elapsedMillis;
 
-		totalTimes[wh] = elapsedMillis;
+		 totalTimes[wh] = elapsedMillis;
          }
          System.out.println("Benchmark beendet.");
          
@@ -317,7 +321,7 @@ public class Main{
          		 "\tDurchschnittliche Framerate: " + absFrame/wH + " fps\n" +
         		 "\tFrames Minimum: " + minFrame + " fps\n" + 
          		 "\tFrames Maximum: " + maxFrame + " fps\n");
-
+         kernel.dispose();
 
       }
 
