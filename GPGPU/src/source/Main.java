@@ -56,8 +56,12 @@ public class Main{
 	   Kernel kernel = null;
 	   int wH = 0;
 	   if(args.length == 1){
-		   //EXCEPTION HANDLING
+		   try{
 		   wH = Integer.parseInt(args[0]);
+		   }catch(NumberFormatException e){
+			   System.out.println("Falscher Start des Programms.\nRichtig: .jar anzWiederholungen\nanWiederholungen muss groesser 0 sein!");
+			   System.exit(0);
+		   }
 		   if(wH == 0){
 			   System.out.println("Falscher Start des Programms.\nRichtig: .jar anzWiederholungen\nanWiederholungen muss groesser 0 sein!");
 			   System.exit(0);

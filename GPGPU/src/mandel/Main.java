@@ -63,7 +63,6 @@ import com.amd.aparapi.Range;
  * @author gfrost
  *
  */
-
 public class Main{
 
    /**
@@ -72,7 +71,6 @@ public class Main{
     * @author gfrost
     *
     */
-
    public static class MandelKernel extends Kernel{
 	   
 
@@ -167,7 +165,14 @@ public class Main{
 	   
 	  int wH = 0; 
 	  if(args.length == 1){
+		  try{
 		  wH = Integer.parseInt(args[0]);
+		  }catch(NumberFormatException e){
+			  System.out.println("Parameter muessen groesser 0 sein.\n " +
+				  		"Eingabe erfolgt so:\n" +
+				  		".jar anzProgrammWiederholungen anzWiederholungenImProgramm");
+			  System.exit(0);
+		  }
 		  if(wH == 0){
 			  System.out.println("Parameter muessen groesser 0 sein.\n " +
 			  		"Eingabe erfolgt so:\n" +
